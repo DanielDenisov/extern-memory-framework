@@ -1,3 +1,10 @@
+//Need to be here or else a linker error type thing will be thrown
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <string>
+#include <vector>
+
 #include "memory.h"
 
 namespace PID {
@@ -5,10 +12,10 @@ namespace PID {
     #include <fstream>
     namespace fs = std::filesystem;
 
-    //Finds the PID for an Unreal Engine (4 or 5) game running inside Flatpak.
+    //Finds the PID for an process.
     // The exact executable naming convention seen in your Wine process dump
     pid_t FindProcessPID(std::string procName) {
-        const std::string target_exe = gameName; //"XYZ-Win64-Shipping.exe";
+        const std::string target_exe = procName;
 
         for (const auto& entry : fs::directory_iterator("/proc")) {
             if (!entry.is_directory()) continue;
@@ -50,14 +57,6 @@ namespace BaseAddress{
         //many processes.
     }
 
-    long FindBaseAddressOfProcess(pid_t pid, std::string procName) {
-        std::string maps_path = "/proc/" + std::to_string(pid) + "/maps";
-        std::ifstream maps_file(maps_path);
-
-        if (!maps_file.is_open()) {
-        std::cerr << "[-] Failed to open maps for PID: " << pid << std::endl;
-        return 0;
-    }
 
     uintptr_t GetProcessBaseAddress(pid_t pid, const std::string& name) {
         std::ifstream file("/proc/" + std::to_string(pid) + "/maps");
@@ -76,10 +75,9 @@ namespace BaseAddress{
                 size_t dash = range.find('-');
                 if (dash != std::string::npos) {
                     return std::stoull(range.substr(0, dash), nullptr, 16);
-                }
+                    }
             }
         }
         return 0;
     }
-
 }

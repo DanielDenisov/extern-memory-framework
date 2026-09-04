@@ -26,6 +26,7 @@ set(PROJECT_SOURCES
     draw/Window.h
 )
 
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 add_executable(externMemoryFramework ${PROJECT_SOURCES})
 

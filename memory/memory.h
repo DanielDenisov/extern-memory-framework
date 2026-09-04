@@ -2,6 +2,7 @@
  * GlobalMemoryManager needs to be in the .h because if its in the .cpp
  * you will run into errors with the linker and not defining what types T can be.
 */
+#pragma once
 
 #include <string>
 #include <sys/types.h>
@@ -11,6 +12,8 @@
 #include <cstring>
 #include <signal.h>
 #include <vector>
+#include <type_traits>
+#include <filesystem>
 
 class GlobalMemoryManager {
 private:
@@ -22,6 +25,8 @@ private:
     template <typename T>
     T ReadMemory(pid_t pid, long address)
     {
+        static_assert(std::is_trivially_copyable_v<T>, "Type T must be trivially copyable to safely read raw memory!");
+
         T buffer;
         struct iovec local[1];
         struct iovec remote[1];
@@ -75,41 +80,42 @@ private:
 
 public:
 
-////////// Public Functions but not intended for use //////////    
+////////// Public Functions but not intended for use //////////
     template<typename T>
     T ReadMemory(uintptr_t address)
     {
-        return ReadMemory<T>(ProcessId, address);
+        return ReadMemory<T>(ProcessID, address);
     }
 
     void ReadMemoryBuffer(uintptr_t address, void* buffer, size_t size)
     {
-        ReadMemoryBuffer(ProcessId, address, buffer, size);
+        ReadMemoryBuffer(ProcessID, address, buffer, size);
     }
 
     template<typename T>
     bool WriteMemory(uintptr_t address, const T& value)
     {
-        return WriteMemory<T>(ProcessId, address, value);
+        return WriteMemory<T>(ProcessID, address, value);
     }
+
 
 ////////// Getters and Setters //////////
     void setPID(pid_t pid) {
-        GMemoryManager.ProcessID = pid;
+        ProcessID = pid;
     }
     void setBaseAddress(long baseAddress) {
-        GMemoryManager.BaseAddress = baseAddress;
+        BaseAddress = baseAddress;
     }
 
     pid_t getPID() {
-        return GMemoryManager.ProcessID;
+        return ProcessID;
     }
     long getBaseAddress() {
-        return GMemoryManager.BaseAddress;
+        return BaseAddress;
     }
-}
+};
 
-GlobalMemoryManager GMemoryManager; //global instance of class
+inline GlobalMemoryManager GMemoryManager; //global instance of class
 
 //********** Wrapped Functions for ease of use **********//
 
@@ -121,14 +127,14 @@ T ReadMemory(uintptr_t address)
 }
 
 //Read's process memory at address into a buffer, Requires object GMemoryManager to have PID
-void ReadMemoryBuffer(uintptr_t address, void* buffer, size_t size)
+inline void ReadMemoryBuffer(uintptr_t address, void* buffer, size_t size)
 {
     GMemoryManager.ReadMemoryBuffer(address, buffer, size);
 }
 
 //Writes memory to a process, this can cause target to crash, Requires object GMemoryManager to have PID
 template<typename T>
-bool WriteMemory(uintptr_t address, const T& value)
+inline bool WriteMemory(uintptr_t address, const T& value)
 {
     return GMemoryManager.WriteMemory<T>(address, value);
 }
