@@ -139,3 +139,12 @@ inline bool WriteMemory(uintptr_t address, const T& value)
     return GMemoryManager.WriteMemory<T>(address, value);
 }
 
+namespace PID {
+    pid_t FindProcessPID(std::string procName);
+}
+
+namespace BaseAddress {
+    long FindBaseAddressOfWineProcess(pid_t pid, std::string procName);
+    uintptr_t GetProcessBaseAddress(pid_t pid, const std::string& name);
+
+}

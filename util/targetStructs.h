@@ -13,7 +13,7 @@ struct TargetString {
 
 template <typename T>
 struct TargetVector {
-    T* start;        
-    T* end;          
+    T* start;
+    T* end;
     T* end_capacity; 
 };

@@ -23,6 +23,7 @@ set(PROJECT_SOURCES
     config.h
     memory/memory.h
     memory/memory.cpp
+    util/targetStructs.h
     draw/Window.h
 )
 
