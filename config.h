@@ -10,7 +10,7 @@
 namespace settings {
     constexpr int WINDOW_HEIGHT = 1080;
     constexpr int WINDOW_WIDTH = 1920;
-    constexpr std::string name = "Window Name";
+    constexpr const char* name = "Better Discord Overlay";
 }
 
 namespace offsets {
