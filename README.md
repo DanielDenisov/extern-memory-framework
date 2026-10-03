@@ -32,14 +32,20 @@ If your tagret is being installed through Lutrus or Steam, that installer should
 
 ### 3) Clone Repo
 Since the Framework depends on IMGUI, it needs to be cloned recusivly
-```
+```bash
 git clone --recurse-submodules https://github.com/DanielDenisov/extern-memory-framework.git
 ```
 
 ### 4) Building
 
-#### Using CLion (recomended)
+Install dependencies:
+```bash
+sudo apt update
+sudo apt install build-essential libglfw3-dev libgl-dev
+```
 
+#### Using CLion (recomended)
+Install and open the project. Go through setup wizard and only change mode from Debug->Release
 
 #### Using Terminal
 ```cmake...```
@@ -51,7 +57,6 @@ The program must be ran as root.
 
 There is a provided `setup.sh`
 Run to stat the program
-```
+```bash
 bash start.sh
-
 ```
